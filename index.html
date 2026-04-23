@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Littératie en IA pour l'enseignement des langues — Auto-évaluation</title>
+<meta name="description" content="Auto-évaluation de la littératie en intelligence artificielle pour enseignant·e·s de langues secondes et étrangères. Cadre fondé sur Long & Magerko (2020), UNESCO (2024) et la recherche en acquisition des langues.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #171411;
+    --ink-soft: #2a2520;
+    --ink-muted: #6b635c;
+    --paper: #f4ede0;
+    --paper-warm: #ebe1cc;
+    --paper-deep: #ddcfb2;
+    --accent: #b8422a;
+    --accent-deep: #8c2f1d;
+    --accent-soft: #e8c5b8;
+    --sage: #5f7354;
+    --sage-soft: #c5d1b8;
+    --gold: #b8893a;
+    --rule: #c7b697;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Manrope', -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(184,66,42,0.045) 0%, transparent 45%),
+      radial-gradient(circle at 88% 90%, rgba(95,115,84,0.06) 0%, transparent 45%);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    opacity: 0.3; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 36px 32px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TOP */
+  .top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 20px; border-bottom: 1px solid var(--rule);
+    margin-bottom: 52px; flex-wrap: wrap; gap: 12px;
+  }
+  .top .mark {
+    font-family: var(--serif); font-weight: 500; font-style: italic;
+    font-size: 18px; letter-spacing: -0.01em;
+  }
+  .top .mark span { color: var(--accent); }
+  .top .meta {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-muted); font-weight: 500;
+  }
+
+  .screen { display: none; animation: fadeIn 0.5s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* INTRO */
+  .kicker {
+    font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 24px;
+  }
+  .kicker::before {
+    content: ""; display: inline-block; width: 28px; height: 1px;
+    background: var(--accent); vertical-align: middle; margin-right: 12px;
+    transform: translateY(-2px);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-variation-settings: "opsz" 144, "SOFT" 0;
+    font-weight: 400;
+    font-size: clamp(36px, 6vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin-bottom: 22px;
+  }
+  h1 em {
+    font-style: italic; font-weight: 300;
+    color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .lede {
+    font-family: var(--serif);
+    font-size: 19px; line-height: 1.5;
+    font-weight: 300;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin-bottom: 36px;
+  }
+  .intro-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1px; background: var(--rule);
+    border: 1px solid var(--rule); margin: 36px 0 44px;
+  }
+  .intro-grid > div { background: var(--paper); padding: 20px 18px; }
+  .intro-grid .num {
+    font-family: var(--serif); font-size: 26px; font-weight: 400;
+    color: var(--accent); line-height: 1;
+    margin-bottom: 6px; font-feature-settings: "tnum";
+  }
+  .intro-grid .lbl {
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-muted); font-weight: 500;
+  }
+  .prose { font-size: 15px; color: var(--ink-soft); max-width: 640px; margin-bottom: 18px; }
+  .prose strong { color: var(--ink); font-weight: 600; }
+  .cite {
+    font-family: var(--serif); font-style: italic;
+    font-size: 14px; color: var(--ink-muted);
+    border-left: 2px solid var(--accent); padding-left: 16px;
+    margin: 28px 0 40px; max-width: 560px;
+  }
+
+  .foundations {
+    margin: 36px 0 48px;
+    padding: 22px 26px;
+    background: var(--paper-warm);
+    border-left: 3px solid var(--sage);
+  }
+  .foundations .flbl {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 700; color: var(--sage); margin-bottom: 10px;
+  }
+  .foundations ul { list-style: none; display: grid; gap: 6px; }
+  .foundations li {
+    font-family: var(--serif); font-size: 14px; color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .foundations li::before {
+    content: "—"; color: var(--accent); margin-right: 10px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--sans); font-size: 14px; font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 15px 26px;
+    border: none; cursor: pointer;
+    background: var(--ink); color: var(--paper);
+    border-radius: 0;
+    transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+    text-transform: uppercase;
+  }
+  .btn:hover { background: var(--accent); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+  .btn svg { width: 16px; height: 16px; transition: transform 0.25s ease; }
+  .btn:hover svg { transform: translateX(4px); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:disabled:hover { background: var(--ink); transform: none; box-shadow: none; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: var(--paper); box-shadow: none; transform: none; }
+  .actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+
+  /* CONTEXT FORM */
+  .ctx-grid { display: grid; gap: 26px; margin: 28px 0 40px; }
+  .field { }
+  .field label {
+    display: block; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-muted);
+    font-weight: 600; margin-bottom: 12px;
+  }
+  .field input[type="text"] {
+    width: 100%; max-width: 480px;
+    font-family: var(--serif); font-size: 20px; font-weight: 400;
+    padding: 8px 0; background: transparent;
+    border: none; border-bottom: 1px solid var(--ink);
+    color: var(--ink); outline: none;
+  }
+  .field input[type="text"]:focus { border-color: var(--accent); }
+  .field .hint { font-size: 13px; color: var(--ink-muted); margin-top: 8px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-size: 13px; font-weight: 500;
+    padding: 9px 16px;
+    background: var(--paper); border: 1px solid var(--rule);
+    cursor: pointer; transition: all 0.15s ease;
+    color: var(--ink-soft);
+  }
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.selected { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* QUESTIONS */
+  .progress-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted); font-weight: 500;
+    margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+  }
+  .progress-meta .section-name { color: var(--accent); font-weight: 600; }
+  .progress-bar {
+    height: 2px; background: var(--paper-deep); margin-bottom: 36px;
+    position: relative;
+  }
+  .progress-bar .fill {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: var(--accent); transition: width 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .dimension-header {
+    margin: 20px 0 36px; display: flex; gap: 22px; align-items: flex-start;
+  }
+  .dimension-num {
+    font-family: var(--serif); font-size: 60px; font-weight: 300;
+    font-style: italic;
+    line-height: 0.9; color: var(--accent);
+    font-feature-settings: "tnum"; flex-shrink: 0;
+  }
+  .dimension-title {
+    font-family: var(--serif); font-size: clamp(24px, 3.2vw, 32px);
+    font-weight: 400; letter-spacing: -0.015em; line-height: 1.1;
+    padding-top: 6px;
+  }
+  .dimension-sub {
+    font-size: 14px; color: var(--ink-muted); margin-top: 10px;
+    max-width: 620px; line-height: 1.5;
+  }
+  .scale-guide {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px; background: var(--rule); border: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .scale-guide > div { background: var(--paper); padding: 12px 14px; }
+  .scale-guide .sg-n {
+    font-family: var(--serif); font-size: 18px; font-weight: 500;
+    color: var(--accent); margin-bottom: 2px;
+  }
+  .scale-guide .sg-l {
+    font-size: 11px; color: var(--ink-muted); line-height: 1.3;
+  }
+
+  .question {
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .question:last-of-type { border-bottom: 1px solid var(--rule); }
+  .q-label { display: flex; gap: 16px; margin-bottom: 16px; }
+  .q-num {
+    font-family: var(--serif); font-size: 13px; color: var(--accent);
+    font-weight: 600; font-style: italic; flex-shrink: 0;
+    min-width: 28px; padding-top: 3px;
+  }
+  .q-text {
+    font-family: var(--serif); font-size: 17px; line-height: 1.45;
+    color: var(--ink); font-weight: 400;
+  }
+  .q-options {
+    display: flex; gap: 6px; margin-left: 44px; flex-wrap: wrap;
+  }
+  .q-opt {
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    padding: 10px 14px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 8px;
+    min-width: 120px;
+  }
+  .q-opt:hover { border-color: var(--ink); color: var(--ink); }
+  .q-opt .dot {
+    width: 9px; height: 9px; border: 1px solid var(--ink-muted);
+    border-radius: 50%; transition: all 0.15s ease; flex-shrink: 0;
+  }
+  .q-opt[data-v="0"].selected { background: var(--accent-deep); color: var(--paper); border-color: var(--accent-deep); }
+  .q-opt[data-v="1"].selected { background: var(--gold); color: var(--paper); border-color: var(--gold); }
+  .q-opt[data-v="2"].selected { background: #4a6a5f; color: var(--paper); border-color: #4a6a5f; }
+  .q-opt[data-v="3"].selected { background: var(--sage); color: var(--paper); border-color: var(--sage); }
+  .q-opt.selected .dot { background: var(--paper); border-color: var(--paper); }
+
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--rule);
+    gap: 16px; flex-wrap: wrap;
+  }
+  .nav-row .status {
+    font-size: 11px; color: var(--ink-muted); letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* RESULTS */
+  .result-header { border-bottom: 1px solid var(--rule); padding-bottom: 28px; margin-bottom: 36px; }
+  .result-name {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted); margin-bottom: 8px; font-weight: 500;
+  }
+  .result-level {
+    font-family: var(--serif);
+    font-size: clamp(42px, 7vw, 68px);
+    font-weight: 300; font-style: italic;
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--accent); margin-bottom: 14px;
+  }
+  .result-summary {
+    font-family: var(--serif); font-size: 18px; font-weight: 300;
+    color: var(--ink-soft); max-width: 640px; line-height: 1.5;
+  }
+  .overall-score {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 22px 0; border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    margin: 22px 0 40px;
+  }
+  .overall-score .val {
+    font-family: var(--serif); font-size: 68px; font-weight: 300;
+    line-height: 1; font-feature-settings: "tnum";
+    letter-spacing: -0.03em;
+  }
+  .overall-score .pct {
+    font-family: var(--serif); font-style: italic; font-size: 26px;
+    color: var(--ink-muted); font-weight: 300;
+  }
+  .overall-score .lbl {
+    margin-left: auto; font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-muted); font-weight: 600;
+    text-align: right;
+  }
+
+  /* RADAR */
+  .radar-section {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+    margin: 32px 0 48px; align-items: center;
+  }
+  .radar-wrap { display: flex; justify-content: center; }
+  .radar { width: 100%; max-width: 360px; height: auto; }
+  .radar-legend h3 {
+    font-family: var(--serif); font-size: 22px; font-weight: 400;
+    margin-bottom: 14px; line-height: 1.2; letter-spacing: -0.01em;
+  }
+  .radar-legend p { font-size: 14px; color: var(--ink-soft); margin-bottom: 10px; }
+  @media (max-width: 700px) { .radar-section { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* BAR BREAKDOWN */
+  .score-grid {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 18px 22px; align-items: center; margin: 28px 0 44px;
+  }
+  .score-grid .sg-num {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 22px; color: var(--accent); font-feature-settings: "tnum";
+  }
+  .score-grid .sg-name {
+    font-family: var(--serif); font-size: 16px; font-weight: 400; color: var(--ink);
+  }
+  .score-grid .sg-bar-wrap {
+    grid-column: 2 / 4; height: 6px; background: var(--paper-deep);
+    position: relative; margin-top: -2px;
+  }
+  .score-grid .sg-bar {
+    height: 100%; background: var(--accent);
+    transition: width 1.1s cubic-bezier(.2,.8,.2,1); transition-delay: 0.2s;
+  }
+  .score-grid .sg-val {
+    font-family: var(--serif); font-feature-settings: "tnum";
+    font-weight: 500; font-size: 14px;
+    color: var(--ink-soft); min-width: 48px; text-align: right;
+  }
+  .score-grid .sg-head {
+    grid-column: 1 / -1; font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-muted);
+    padding-bottom: 6px; border-bottom: 1px solid var(--rule);
+    margin-bottom: 8px; font-weight: 600;
+  }
+
+  /* STRENGTHS / PRIORITIES */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin: 36px 0 48px;
+  }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+  .card {
+    padding: 24px; background: var(--paper-warm);
+    border-top: 3px solid var(--sage);
+  }
+  .card.priority { border-top-color: var(--accent); }
+  .card .c-lbl {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 700; color: var(--sage); margin-bottom: 10px;
+  }
+  .card.priority .c-lbl { color: var(--accent); }
+  .card h4 {
+    font-family: var(--serif); font-size: 18px; font-weight: 500;
+    line-height: 1.25; margin-bottom: 8px;
+  }
+  .card p { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+  .card .c-score {
+    font-family: var(--serif); font-feature-settings: "tnum";
+    font-size: 13px; color: var(--ink-muted); margin-top: 10px;
+  }
+
+  /* FEEDBACK */
+  .feedback-section { margin: 48px 0; }
+  .feedback-section > h3 {
+    font-family: var(--serif); font-size: 24px; font-weight: 400;
+    letter-spacing: -0.01em; margin-bottom: 18px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+  }
+  .fb-item {
+    padding: 22px 0; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 110px 1fr; gap: 22px;
+  }
+  .fb-item:last-child { border-bottom: none; }
+  .fb-tag {
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 700;
+    padding: 5px 10px; color: var(--paper);
+    background: var(--ink); display: inline-block;
+    height: fit-content; white-space: nowrap;
+  }
+  .fb-tag.strong { background: var(--sage); }
+  .fb-tag.solid { background: #4a6a5f; }
+  .fb-tag.dev { background: var(--gold); }
+  .fb-tag.emerging { background: var(--accent-deep); }
+  .fb-body h4 {
+    font-family: var(--serif); font-size: 18px; font-weight: 500;
+    margin-bottom: 8px; line-height: 1.3;
+  }
+  .fb-body h4 .scorebit {
+    color: var(--ink-muted); font-weight: 400; font-size: 14px;
+    font-style: italic;
+  }
+  .fb-body p { font-size: 14px; color: var(--ink-soft); margin-bottom: 10px; line-height: 1.6; }
+  .fb-action {
+    margin-top: 12px; padding: 12px 14px;
+    background: var(--paper); border-left: 2px solid var(--accent);
+    font-size: 13px; color: var(--ink);
+  }
+  .fb-action strong { color: var(--accent); font-weight: 700; }
+  @media (max-width: 640px) {
+    .fb-item { grid-template-columns: 1fr; gap: 12px; }
+  }
+
+  /* NEXT ACTIONS */
+  .actions-list {
+    counter-reset: actstep; margin: 20px 0 40px;
+  }
+  .action-step {
+    counter-increment: actstep;
+    display: grid; grid-template-columns: 60px 1fr; gap: 20px;
+    padding: 22px 0; border-bottom: 1px solid var(--rule);
+  }
+  .action-step::before {
+    content: counter(actstep, decimal-leading-zero);
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 28px; color: var(--accent); line-height: 1;
+    font-feature-settings: "tnum";
+  }
+  .action-step h5 {
+    font-family: var(--serif); font-size: 17px; font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .action-step p { font-size: 14px; color: var(--ink-soft); }
+
+  /* SCENARIOS */
+  .scenarios {
+    margin: 48px 0; padding: 28px 30px;
+    background: var(--paper-warm); border: 1px solid var(--rule);
+  }
+  .scenarios h3 {
+    font-family: var(--serif); font-size: 22px; font-weight: 400;
+    margin-bottom: 14px; letter-spacing: -0.01em;
+  }
+  .scenarios > p { font-size: 14px; color: var(--ink-soft); margin-bottom: 20px; }
+  .scenario {
+    padding: 16px 0; border-top: 1px solid var(--rule);
+  }
+  .scenario-q {
+    font-family: var(--serif); font-size: 15px; font-style: italic;
+    color: var(--ink); line-height: 1.5;
+  }
+  .scenario-q::before {
+    content: "§"; color: var(--accent); margin-right: 10px; font-style: normal; font-weight: 700;
+  }
+
+  /* REFERENCES */
+  .refs {
+    margin: 48px 0 24px; padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+  .refs h4 {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 600; color: var(--ink-muted); margin-bottom: 16px;
+  }
+  .refs ol { list-style: none; counter-reset: refn; display: grid; gap: 10px; }
+  .refs li {
+    counter-increment: refn;
+    font-family: var(--serif); font-size: 13px; line-height: 1.5;
+    color: var(--ink-soft);
+    padding-left: 28px; position: relative;
+  }
+  .refs li::before {
+    content: counter(refn, decimal-leading-zero);
+    position: absolute; left: 0; top: 0;
+    font-style: italic; color: var(--accent); font-weight: 500;
+  }
+
+  footer {
+    margin-top: 64px; padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px; color: var(--ink-muted);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer em { font-family: var(--serif); font-style: italic; }
+
+  @media print {
+    body { background: white; }
+    .grain, .no-print, .nav-row, .btn { display: none !important; }
+    .screen:not(#s-result) { display: none !important; }
+    #s-result { display: block !important; }
+    .wrap { max-width: 100%; padding: 20px; }
+    .overall-score, .radar-section, .fb-item, .action-step, .scenarios { page-break-inside: avoid; }
+    .two-col { page-break-inside: avoid; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 24px 18px 80px; }
+    .q-options { margin-left: 0; }
+    .dimension-header { flex-direction: column; gap: 10px; }
+    .dimension-num { font-size: 44px; }
+    .overall-score { flex-wrap: wrap; }
+    .overall-score .lbl { margin-left: 0; width: 100%; text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="wrap">
+
+  <div class="top">
+    <div class="mark">Littératie <span>IA</span> · Enseignement des langues secondes &amp; étrangères</div>
+    <div class="meta">Auto-évaluation · v2</div>
+  </div>
+
+  <!-- ═══════════════════ INTRO ═══════════════════ -->
+  <section class="screen active" id="s-intro">
+    <div class="kicker">Outil d'auto-évaluation fondé sur la recherche</div>
+    <h1>Littératie en IA pour enseignant·e·s de <em>langues</em>.</h1>
+    <p class="lede">Un instrument de réflexion professionnelle conçu pour les enseignant·e·s de langues secondes et étrangères — articulant la recherche en littératie en intelligence artificielle et la recherche en acquisition des langues.</p>
+
+    <div class="intro-grid">
+      <div><div class="num">06</div><div class="lbl">Dimensions</div></div>
+      <div><div class="num">32</div><div class="lbl">Énoncés</div></div>
+      <div><div class="num">12<span style="font-size:15px">&thinsp;min</span></div><div class="lbl">Durée estimée</div></div>
+      <div><div class="num">—</div><div class="lbl">Profil &amp; feuille de route</div></div>
+    </div>
+
+    <p class="prose">Chaque énoncé se répond sur une échelle de compétence à <strong>quatre niveaux</strong> — de « pas encore » à « je pourrais accompagner un collègue » —, ce qui distingue la compréhension, l'autonomie et l'expertise transmissible. Le rapport final identifie vos <strong>deux forces</strong> et vos <strong>deux priorités</strong>, avec une action concrète pour chacune des six dimensions.</p>
+
+    <div class="foundations">
+      <div class="flbl">Fondements théoriques</div>
+      <ul>
+        <li>Long &amp; Magerko (2020) — cadre des compétences de littératie en IA</li>
+        <li>UNESCO (2024) — cadre de compétences en IA pour les enseignant·e·s</li>
+        <li>Kohnke, Moorhouse &amp; Zou (2023) — ChatGPT et l'enseignement des langues</li>
+        <li>Recherche en acquisition des langues : ZPD, input/interaction, rétroaction corrective, remarquage, output poussé</li>
+      </ul>
+    </div>
+
+    <p class="cite">«&nbsp;La littératie en IA des enseignant·e·s ne se limite pas à des compétences techniques&nbsp;: elle articule une compréhension conceptuelle, une lucidité éthique et une capacité à concevoir des situations d'apprentissage qui exploitent l'IA sans trahir ce que la recherche nous apprend de l'acquisition des langues.&nbsp;»</p>
+
+    <div class="actions">
+      <button class="btn" onclick="show('s-context')">
+        Commencer l'auto-évaluation
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CONTEXT ═══════════════════ -->
+  <section class="screen" id="s-context">
+    <div class="kicker">Étape 1/3 · Contexte professionnel</div>
+    <h1>Pour ajuster votre <em>rapport</em>.</h1>
+    <p class="lede">Trois informations rapides pour personnaliser les retours et recommandations. Tout reste dans votre navigateur — rien n'est transmis.</p>
+
+    <div class="ctx-grid">
+      <div class="field">
+        <label for="name-input">Prénom (facultatif)</label>
+        <input type="text" id="name-input" placeholder="Ex. Camille" autocomplete="given-name" maxlength="40">
+      </div>
+
+      <div class="field">
+        <label>Langue(s) que vous enseignez (facultatif)</label>
+        <input type="text" id="lang-input" placeholder="Ex. anglais L2, FLE, espagnol" maxlength="80">
+      </div>
+
+      <div class="field">
+        <label>Contexte d'enseignement principal</label>
+        <div class="chip-row" id="ctx-role">
+          <div class="chip" data-v="primaire">Primaire</div>
+          <div class="chip" data-v="secondaire">Secondaire</div>
+          <div class="chip" data-v="superieur">Supérieur</div>
+          <div class="chip" data-v="adultes">Formation d'adultes</div>
+          <div class="chip" data-v="autre">Autre</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Votre usage actuel de l'IA en classe</label>
+        <div class="chip-row" id="ctx-use">
+          <div class="chip" data-v="none">Jamais</div>
+          <div class="chip" data-v="rare">Ponctuel (&lt;1/mois)</div>
+          <div class="chip" data-v="reg">Régulier (hebdo.)</div>
+          <div class="chip" data-v="int">Intensif (plusieurs fois/semaine)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" onclick="show('s-intro')">← Retour</button>
+      <button class="btn" onclick="startQuestions()">
+        Commencer · Étape 2
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ QUESTIONS ═══════════════════ -->
+  <section class="screen" id="s-questions">
+    <div class="progress-meta">
+      <span>Étape 2/3 · Dimension <span id="dim-idx">1</span> / 6</span>
+      <span class="section-name" id="dim-name">—</span>
+      <span><span id="q-answered">0</span> / <span id="q-total">32</span></span>
+    </div>
+    <div class="progress-bar"><div class="fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="dimension-header">
+      <div class="dimension-num" id="dim-num">01</div>
+      <div>
+        <div class="dimension-title" id="dim-title">—</div>
+        <div class="dimension-sub" id="dim-sub">—</div>
+      </div>
+    </div>
+
+    <div class="scale-guide">
+      <div><div class="sg-n">0 · Pas encore</div><div class="sg-l">Je ne me reconnais pas dans cet énoncé</div></div>
+      <div><div class="sg-n">1 · Partiellement</div><div class="sg-l">J'y tends, avec aide ou de façon hésitante</div></div>
+      <div><div class="sg-n">2 · Autonome</div><div class="sg-l">Oui, de façon autonome et assurée</div></div>
+      <div><div class="sg-n">3 · Transmissible</div><div class="sg-l">Avec aisance — je pourrais accompagner un·e collègue</div></div>
+    </div>
+
+    <div id="questions-list"></div>
+
+    <div class="nav-row">
+      <button class="btn ghost" onclick="prevDim()" id="prev-btn">← Précédent</button>
+      <span class="status" id="dim-status"></span>
+      <button class="btn" onclick="nextDim()" id="next-btn">
+        Suivant
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ RESULT ═══════════════════ -->
+  <section class="screen" id="s-result">
+    <div class="kicker">Étape 3/3 · Votre profil de littératie IA</div>
+
+    <div class="result-header">
+      <div class="result-name" id="r-name">Votre profil</div>
+      <div class="result-level" id="r-level">—</div>
+      <p class="result-summary" id="r-summary">—</p>
+    </div>
+
+    <div class="overall-score">
+      <div class="val" id="r-score">0</div>
+      <div class="pct">/ 100</div>
+      <div class="lbl">Score global<br><span id="r-context-tag" style="letter-spacing:0.04em; font-weight:400; text-transform:none; font-style:italic;">—</span></div>
+    </div>
+
+    <div class="radar-section">
+      <div class="radar-wrap">
+        <svg class="radar" id="radar-svg" viewBox="-220 -220 440 440" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="radar-legend">
+        <h3>La carte de votre profil.</h3>
+        <p>Le radar révèle la <em>forme</em> de votre littératie en IA, plus éclairante qu'un score global. Un profil équilibré sur six dimensions est plus robuste qu'un profil en pic, même à score égal.</p>
+      </div>
+    </div>
+
+    <div class="score-grid" id="r-grid">
+      <div class="sg-head">Ventilation par dimension</div>
+    </div>
+
+    <h3 style="font-family:var(--serif); font-size:22px; font-weight:400; margin:40px 0 4px; letter-spacing:-0.01em;">Forces &amp; priorités.</h3>
+    <p style="font-size:14px; color:var(--ink-muted); margin-bottom:20px;">Les deux dimensions où vous êtes le plus avancé·e et les deux où un travail ciblé aura le plus grand rendement.</p>
+    <div class="two-col" id="r-fp"></div>
+
+    <div class="feedback-section">
+      <h3>Retour détaillé par dimension</h3>
+      <div id="r-feedback"></div>
+    </div>
+
+    <div class="feedback-section">
+      <h3>Vos trois prochaines actions</h3>
+      <p style="font-size:14px; color:var(--ink-muted); margin-bottom:14px;">Sélectionnées automatiquement à partir de votre profil — ordonnées par priorité.</p>
+      <div class="actions-list" id="r-next"></div>
+    </div>
+
+    <div class="scenarios">
+      <h3>Questions de réflexion pour aller plus loin</h3>
+      <p>L'auto-évaluation quantifie — la réflexion qualifie. Prenez un moment pour considérer ces situations&nbsp;:</p>
+      <div class="scenario">
+        <div class="scenario-q">Un·e apprenant·e vous rend un texte manifestement produit par IA. Comment réagissez-vous — et que dit votre réaction de votre cadre d'usage&nbsp;?</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q">Vous demandez à une IA de produire un texte authentique dans la langue cible à un niveau donné. Quels critères mobilisez-vous pour évaluer si le résultat est <em>vraiment</em> exploitable avec vos apprenant·e·s&nbsp;?</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-q">Un·e apprenant·e progresse plus vite depuis qu'il·elle utilise une IA pour ses productions écrites. Comment distinguez-vous un progrès langagier d'un progrès instrumental (savoir faire produire à l'IA)&nbsp;?</div>
+      </div>
+    </div>
+
+    <div class="refs">
+      <h4>Références mobilisées</h4>
+      <ol>
+        <li>Long, D. &amp; Magerko, B. (2020). What is AI Literacy? Competencies and Design Considerations. <em>CHI Conference on Human Factors in Computing Systems</em>.</li>
+        <li>UNESCO (2024). <em>AI Competency Framework for Teachers</em>. Paris : UNESCO.</li>
+        <li>Kohnke, L., Moorhouse, B. L. &amp; Zou, D. (2023). ChatGPT for Language Teaching and Learning. <em>RELC Journal</em>, 54(2), 537-550.</li>
+        <li>Godwin-Jones, R. (2024). Distributed Agency in Second Language Learning and Teaching through Generative AI. <em>Language Learning &amp; Technology</em>.</li>
+        <li>Liang, W. et al. (2023). GPT Detectors Are Biased Against Non-Native English Writers. <em>Patterns</em>, 4(7).</li>
+      </ol>
+    </div>
+
+    <div class="actions no-print">
+      <button class="btn" onclick="window.print()">
+        Imprimer / PDF
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+      </button>
+      <button class="btn ghost" onclick="restart()">↻ Recommencer</button>
+    </div>
+  </section>
+
+  <footer>
+    <div>Cadre Long &amp; Magerko (2020) · UNESCO (2024) · recherche SLA — <em>outil libre à visée réflexive</em></div>
+    <div>Aucune donnée collectée · tout reste dans votre navigateur</div>
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — URL DU GOOGLE APPS SCRIPT
+// ============================================================
+// Remplacez cette URL par celle de VOTRE script Google Apps Script déployé.
+// Si vous laissez la chaîne vide, aucune donnée n'est envoyée (mode local seulement).
+// Voir le guide d'installation pour la procédure.
+const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxcEzXTK6Y6u8EtIEIsxTkz1xOsW9-jBcQgWwnIVHw8u74FBLqOMYK_WTh1_XJUCf0/exec";
+// Exemple une fois configuré :
+// const SUBMIT_URL = "https://script.google.com/macros/s/AKfycby.../exec";
+
+// ============================================================
+// DIMENSIONS — items ancrés dans la recherche
+// ============================================================
+const DIMENSIONS = [
+  {
+    num: "01",
+    title: "Fondements conceptuels",
+    short: "Fondements conceptuels",
+    sub: "Savoirs fondamentaux sur ce qu'est l'IA, et particulièrement l'IA générative, dans ses rapports au langage.",
+    questions: [
+      "Je peux expliquer, en termes accessibles, ce qu'est un grand modèle de langue (LLM) et en quoi il diffère d'un moteur de recherche, d'un correcteur orthographique ou d'un outil de traduction statistique.",
+      "Je distingue une IA générative d'une IA spécialisée (reconnaissance vocale, systèmes adaptatifs, correction automatique) et j'identifie laquelle est mobilisée par chacun des outils que j'utilise en classe.",
+      "Je comprends qu'un LLM ne « sait » pas la langue au sens humain : il produit des séquences statistiquement probables apprises à partir de textes d'entraînement.",
+      "Je sais ce qu'est un prompt et je distingue un prompt efficace d'un prompt faible pour un objectif d'apprentissage donné.",
+      "Je comprends qu'une IA générative ne possède ni intention, ni expérience vécue, ni référent culturel propre — même lorsqu'elle produit un texte qui en simule."
+    ]
+  },
+  {
+    num: "02",
+    title: "Fonctionnement technique & implications linguistiques",
+    short: "Fonctionnement technique",
+    sub: "Compréhension des mécanismes de l'IA générative, avec attention particulière à leurs conséquences pour les langues.",
+    questions: [
+      "Je comprends les grandes étapes du cycle de vie d'un modèle d'IA générative (données d'entraînement → apprentissage → ajustement → déploiement → rétroactions des usages).",
+      "Je sais que les performances d'une IA varient fortement selon la langue cible et son niveau de ressources (langues « bien dotées » vs « peu dotées ») et j'en anticipe les conséquences pour ma discipline.",
+      "Je peux expliquer ce qu'est une hallucination et en donner des exemples propres à l'apprentissage des langues (règle grammaticale inventée, collocation erronée, référence culturelle inexacte).",
+      "Je comprends que les IA génératives reproduisent les biais de leurs données d'entraînement : elles privilégient certaines variétés standard, certains registres, certains contextes culturels au détriment d'autres.",
+      "Je sais distinguer un modèle généraliste, un outil spécialisé fondé sur une IA, et un agent conversationnel intégrant un LLM — et je sais reconnaître ce que chacun peut et ne peut pas faire."
+    ]
+  },
+  {
+    num: "03",
+    title: "Littératie critique, éthique & citoyenne",
+    short: "Littératie critique & éthique",
+    sub: "Regard lucide sur les enjeux de l'IA : biais, confidentialité, détection, auteurship, pouvoir, variétés linguistiques.",
+    questions: [
+      "Je sais que les outils de détection d'IA sont peu fiables et qu'ils produisent davantage de faux positifs sur les productions d'apprenant·e·s non natif·ve·s — et j'en tire des conséquences pour mon évaluation.",
+      "Je dispose d'un cadre explicite (charte, règles co-construites) avec mes apprenant·e·s sur ce qui est autorisé, encouragé, interdit avec l'IA — et sur la manière de le signaler.",
+      "Je prends en compte la confidentialité et la protection des données avant d'introduire des productions d'apprenant·e·s, des évaluations ou des informations personnelles dans un outil d'IA.",
+      "Je peux nommer au moins deux biais linguistiques ou culturels concrets des IA génératives, avec un impact direct sur l'enseignement-apprentissage d'une langue.",
+      "Je réfléchis à la manière dont l'IA peut renforcer l'hégémonie de certaines langues, variétés ou cultures dans ma classe, et j'adopte des pratiques pour contrebalancer cet effet.",
+      "Je sais problématiser la question de l'auteurship en L2 : à partir de quand et à quelles conditions une production assistée par IA reste-t-elle « celle » de l'apprenant·e ?"
+    ]
+  },
+  {
+    num: "04",
+    title: "Intégration didactique fondée sur la recherche",
+    short: "Intégration didactique (SLA)",
+    sub: "Alignement des usages de l'IA avec ce que nous apprend la recherche en acquisition des langues : ZPD, input/interaction, rétroaction, output poussé.",
+    questions: [
+      "Je relie explicitement mes usages de l'IA à un ou plusieurs principes de l'acquisition des langues (input compréhensible, interaction, rétroaction, output poussé, remarquage, pratique répétée, etc.).",
+      "Je distingue les usages de l'IA qui soutiennent la zone proximale de développement de mes apprenant·e·s de ceux qui la court-circuitent en produisant à leur place.",
+      "Je sais quand l'IA peut fournir un input enrichi, compréhensible et ajusté au niveau de l'apprenant·e — et quand elle risque au contraire de fournir un input artificiel, inauthentique ou inapproprié.",
+      "Je sais concevoir des activités avec l'IA qui préservent — voire renforcent — l'interaction humaine, la négociation du sens et l'effort cognitif productif.",
+      "Je peux utiliser l'IA pour offrir une rétroaction corrective cohérente avec la recherche (rétroaction négociée, attention à la forme, reformulation étayée) plutôt qu'un simple marquage d'erreurs.",
+      "Je sais identifier les situations où recourir à l'IA risque de réduire l'exposition à des conditions essentielles d'acquisition (interaction authentique, effort de récupération, engagement socioaffectif)."
+    ]
+  },
+  {
+    num: "05",
+    title: "Conception & orchestration pédagogiques",
+    short: "Conception & orchestration",
+    sub: "Capacité opérationnelle à concevoir, piloter et ajuster des tâches intégrant l'IA au service d'objectifs langagiers clairs.",
+    questions: [
+      "Je sais formuler un prompt qui explicite le niveau CECRL cible, la tâche, les contraintes linguistiques et les profils d'apprenant·e·s.",
+      "Je peux concevoir des tâches différenciées avec l'IA (mêmes objectifs, supports, étayages et productions attendues variés selon les profils).",
+      "Je sais intégrer l'IA dans un processus d'écriture en plusieurs étapes (planification, brouillon, révision, réécriture) en maintenant l'engagement cognitif de l'apprenant·e à chaque étape.",
+      "Je sais concevoir des activités de pratique orale médiatisées par l'IA (chatbot, reconnaissance vocale) avec objectifs, critères d'évaluation et rétroaction clairs.",
+      "Je sais concevoir des tâches où la littératie en IA est elle-même un objet d'apprentissage (comparer des productions, repérer une hallucination, reformuler un prompt, juger de la pertinence culturelle)."
+    ]
+  },
+  {
+    num: "06",
+    title: "Réflexivité professionnelle & agentivité",
+    short: "Réflexivité & agentivité",
+    sub: "Capacité à documenter, évaluer et faire évoluer sa pratique, tout en développant l'agentivité et la métacognition des apprenant·e·s.",
+    questions: [
+      "Je développe activement ma formation continue en littératie IA (lectures, communautés de pratique, expérimentation documentée).",
+      "Je documente et j'évalue les effets réels de mes usages de l'IA sur l'apprentissage (progrès, motivation, autonomie) plutôt que de me fier à mes impressions.",
+      "Je favorise explicitement la métacognition de mes apprenant·e·s sur leurs propres usages de l'IA (« qu'ai-je appris ? qu'est-ce que l'IA a fait à ma place ? »).",
+      "J'adapte mon dispositif d'évaluation pour qu'il reste valide à l'ère des IA génératives (tâches en classe, processus rendu visible, oral, portefeuilles, etc.).",
+      "Je me sens capable d'accompagner un·e collègue dans la mise en place d'un usage pédagogique raisonné de l'IA dans l'enseignement des langues."
+    ]
+  }
+];
+
+const SCALE_LABELS = ["Pas encore", "Partiellement", "Autonome", "Transmissible"];
+const TOTAL_QUESTIONS = DIMENSIONS.reduce((s, d) => s + d.questions.length, 0);
+document.getElementById('q-total').textContent = TOTAL_QUESTIONS;
+
+// State
+const answers = {};
+let currentDim = 0;
+const ctx = { name: '', lang: '', role: '', use: '' };
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Context chips
+document.querySelectorAll('#ctx-role .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#ctx-role .chip').forEach(x => x.classList.remove('selected'));
+    c.classList.add('selected');
+    ctx.role = c.dataset.v;
+  });
+});
+document.querySelectorAll('#ctx-use .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#ctx-use .chip').forEach(x => x.classList.remove('selected'));
+    c.classList.add('selected');
+    ctx.use = c.dataset.v;
+  });
+});
+
+function startQuestions() {
+  ctx.name = document.getElementById('name-input').value.trim();
+  ctx.lang = document.getElementById('lang-input').value.trim();
+  currentDim = 0;
+  renderDimension();
+  show('s-questions');
+}
+function restart() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  currentDim = 0;
+  ['name-input','lang-input'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
+  ctx.name = ctx.lang = ctx.role = ctx.use = '';
+  show('s-intro');
+}
+
+// ============================================================
+// QUESTIONS
+// ============================================================
+function renderDimension() {
+  const dim = DIMENSIONS[currentDim];
+  document.getElementById('dim-idx').textContent = currentDim + 1;
+  document.getElementById('dim-num').textContent = dim.num;
+  document.getElementById('dim-title').textContent = dim.title;
+  document.getElementById('dim-sub').textContent = dim.sub;
+  document.getElementById('dim-name').textContent = dim.short;
+
+  const list = document.getElementById('questions-list');
+  list.innerHTML = '';
+
+  dim.questions.forEach((qText, qIdx) => {
+    const qEl = document.createElement('div');
+    qEl.className = 'question';
+    const selected = answers[currentDim]?.[qIdx];
+    let optsHtml = '';
+    for (let v = 0; v <= 3; v++) {
+      optsHtml += `<div class="q-opt ${selected === v ? 'selected' : ''}" data-v="${v}" data-q="${qIdx}"><div class="dot"></div>${v} · ${SCALE_LABELS[v]}</div>`;
+    }
+    qEl.innerHTML = `
+      <div class="q-label">
+        <div class="q-num">${String(qIdx + 1).padStart(2, '0')}</div>
+        <div class="q-text">${qText}</div>
+      </div>
+      <div class="q-options">${optsHtml}</div>
+    `;
+    list.appendChild(qEl);
+  });
+
+  list.querySelectorAll('.q-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const qIdx = parseInt(opt.dataset.q);
+      const val = parseInt(opt.dataset.v);
+      if (!answers[currentDim]) answers[currentDim] = {};
+      answers[currentDim][qIdx] = val;
+      opt.parentElement.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      updateProgress();
+      updateNavStatus();
+    });
+  });
+
+  document.getElementById('prev-btn').style.visibility = currentDim === 0 ? 'hidden' : 'visible';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.innerHTML = currentDim === DIMENSIONS.length - 1
+    ? `Voir mon profil <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>`
+    : `Suivant <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>`;
+
+  updateProgress();
+  updateNavStatus();
+}
+function updateProgress() {
+  let answered = 0;
+  for (let d = 0; d < DIMENSIONS.length; d++) {
+    answered += Object.keys(answers[d] || {}).length;
+  }
+  document.getElementById('progress-fill').style.width = (answered / TOTAL_QUESTIONS * 100) + '%';
+  document.getElementById('q-answered').textContent = answered;
+}
+function updateNavStatus() {
+  const dim = DIMENSIONS[currentDim];
+  const answered = Object.keys(answers[currentDim] || {}).length;
+  const total = dim.questions.length;
+  const status = document.getElementById('dim-status');
+  if (answered === total) {
+    status.textContent = '✓ Dimension complétée';
+    status.style.color = 'var(--sage)';
+  } else {
+    status.textContent = `${answered} / ${total} répondues`;
+    status.style.color = 'var(--ink-muted)';
+  }
+}
+function nextDim() {
+  const dim = DIMENSIONS[currentDim];
+  const answered = Object.keys(answers[currentDim] || {}).length;
+  if (answered < dim.questions.length) {
+    if (!confirm(`Il reste ${dim.questions.length - answered} énoncé(s) sans réponse pour cette dimension. Continuer tout de même ?`)) return;
+  }
+  if (currentDim === DIMENSIONS.length - 1) {
+    computeResults();
+    show('s-result');
+  } else {
+    currentDim++;
+    renderDimension();
+  }
+}
+function prevDim() { if (currentDim > 0) { currentDim--; renderDimension(); } }
+
+// ============================================================
+// SCORING
+// ============================================================
+function computeResults() {
+  const dimScores = DIMENSIONS.map((dim, dIdx) => {
+    const qCount = dim.questions.length;
+    let sum = 0;
+    for (let q = 0; q < qCount; q++) {
+      if (answers[dIdx]?.[q] !== undefined) sum += answers[dIdx][q];
+    }
+    const max = qCount * 3;
+    const pct = max > 0 ? Math.round((sum / max) * 100) : 0;
+    return { title: dim.title, short: dim.short, num: dim.num, pct, idx: dIdx };
+  });
+  const globalPct = Math.round(dimScores.reduce((s, d) => s + d.pct, 0) / dimScores.length);
+  renderResults(dimScores, globalPct);
+  submitToSheet(dimScores, globalPct);
+}
+
+// ============================================================
+// ENVOI DES DONNÉES VERS GOOGLE SHEETS (si configuré)
+// ============================================================
+function submitToSheet(dimScores, globalPct) {
+  if (!SUBMIT_URL) return; // mode local, aucune donnée envoyée
+
+  // Assemblage du payload : métadonnées + scores par dimension + réponses brutes
+  const payload = {
+    timestamp: new Date().toISOString(),
+    name: ctx.name || "",
+    lang: ctx.lang || "",
+    role: ctx.role || "",
+    use: ctx.use || "",
+    globalScore: globalPct,
+    level: getLevel(globalPct).label,
+    // scores par dimension
+    dim01: dimScores.find(d => d.num === "01").pct,
+    dim02: dimScores.find(d => d.num === "02").pct,
+    dim03: dimScores.find(d => d.num === "03").pct,
+    dim04: dimScores.find(d => d.num === "04").pct,
+    dim05: dimScores.find(d => d.num === "05").pct,
+    dim06: dimScores.find(d => d.num === "06").pct,
+    // réponses brutes (toutes les 32 réponses en format concaténé pour l'analyse)
+    rawAnswers: serializeAnswers()
+  };
+
+  // Envoi en arrière-plan (no-cors → pas de retour, mais réception côté Apps Script)
+  fetch(SUBMIT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).catch(err => {
+    // Échec silencieux : l'utilisateur·trice voit son rapport normalement
+    console.log("Soumission non aboutie (mode hors-ligne ?) :", err);
+  });
+}
+
+function serializeAnswers() {
+  // Produit une chaîne du type "D1Q1:2|D1Q2:3|D1Q3:1|..."
+  const parts = [];
+  DIMENSIONS.forEach((dim, dIdx) => {
+    dim.questions.forEach((_, qIdx) => {
+      const val = answers[dIdx]?.[qIdx];
+      parts.push(`D${dIdx+1}Q${qIdx+1}:${val !== undefined ? val : "-"}`);
+    });
+  });
+  return parts.join("|");
+}
+
+// ============================================================
+// LEVELS
+// ============================================================
+function getLevel(pct) {
+  if (pct >= 85) return {
+    label: "Expert·e transmetteur·trice",
+    summary: "Vous maîtrisez les fondements conceptuels, techniques, éthiques et didactiques de l'IA pour l'enseignement des langues. Votre profil vous situe en posture de formation et d'accompagnement de vos pairs."
+  };
+  if (pct >= 68) return {
+    label: "Praticien·ne avancé·e",
+    summary: "Vous disposez d'un socle solide et mobilisez l'IA avec un vrai discernement pédagogique. Certaines dimensions — souvent la réflexivité professionnelle ou les ancrages didactiques — gagneraient à être structurées plus finement."
+  };
+  if (pct >= 48) return {
+    label: "Praticien·ne en développement",
+    summary: "Vous avez une compréhension fonctionnelle et commencez à intégrer l'IA dans une pratique raisonnée. Le rendement d'un travail ciblé sur vos dimensions les plus faibles sera élevé."
+  };
+  if (pct >= 28) return {
+    label: "Explorateur·trice",
+    summary: "Vous êtes en phase de découverte active. Des repères sont posés, mais plusieurs dimensions du cadre — conceptuelles, critiques ou didactiques — méritent une appropriation progressive et méthodique."
+  };
+  return {
+    label: "Apprenti·e",
+    summary: "Vous entrez dans le domaine de la littératie IA. Plutôt qu'une faiblesse, voyez-y un point de départ net : la feuille de route ci-dessous ordonne les savoirs à construire en priorité."
+  };
+}
+
+// ============================================================
+// FEEDBACK BY DIMENSION (research-informed, 4 strata)
+// ============================================================
+const FEEDBACK = {
+  "01": {
+    expert: { txt: "Vos fondements conceptuels sont solides. Vous mobilisez des catégories pertinentes (IA générative vs spécialisée, prompt, LLM) et pouvez les transmettre sans simplification abusive.", action: "Rôle possible : structurer une courte formation interne pour démystifier le LLM auprès de vos collègues de langues, en partant d'exemples propres à leur discipline." },
+    solid:  { txt: "Les grands repères sont là. L'écart se fait sur la précision terminologique et sur votre aisance à expliquer ces notions à des collègues ou à vos apprenant·e·s.", action: "Choisissez trois notions (LLM, prompt, hallucination) et rédigez pour chacune une explication de 30 secondes en langage ordinaire, testable auprès d'un·e collègue non technicien·ne." },
+    dev:    { txt: "Quelques repères sont posés, mais la distinction entre types d'IA (générative, spécialisée, adaptative) et la compréhension du caractère prédictif des LLM restent à consolider.", action: "Lire une courte synthèse vulgarisée sur le fonctionnement d'un LLM, puis lister les outils d'IA que vous utilisez et classer chacun dans une catégorie précise." },
+    emerging: { txt: "C'est la priorité zéro : sans ces fondements, les autres dimensions restent fragiles. Pas de honte — c'est l'étape que la plupart des dispositifs de formation négligent.", action: "Consacrer 45 minutes à une ressource introductive sérieuse (texte ou vidéo) sur ce qu'est un LLM, et noter trois choses qui vous ont surpris·e." }
+  },
+  "02": {
+    expert: { txt: "Vous appréhendez les implications linguistiques du fonctionnement des LLM — langues peu dotées, biais variétaux, hallucinations spécifiques. C'est rare et précieux.", action: "Structurer une « grille d'audit linguistique » reproductible que vous ou vos collègues pouvez appliquer à tout nouvel outil d'IA envisagé en classe." },
+    solid:  { txt: "Vous comprenez les mécanismes de base et percevez certains risques. L'étape suivante consiste à relier plus systématiquement ces mécanismes à des conséquences observables dans vos pratiques.", action: "Pour votre langue cible, tester une même tâche avec l'IA dans deux variétés (ex. français standard vs québécois, anglais britannique vs AAVE) et documenter les écarts." },
+    dev:    { txt: "Vous avez des intuitions justes mais manquez de cadre conceptuel pour les nommer. Les notions de données d'entraînement, de biais et d'hallucinations gagnent à être explicitement travaillées.", action: "Collecter trois exemples d'hallucination ou de biais constatés dans une sortie d'IA pour votre langue cible : devenir collectionneur·se construit la compétence analytique." },
+    emerging: { txt: "La dimension technique est sous-investie. C'est normal — mais son absence peut conduire à un usage confiant de l'IA sans lucidité sur ce qu'elle produit réellement.", action: "En quelques minutes, faire générer par une IA un texte dans une langue peu dotée que vous connaissez (même passivement) ou une variété non standard, et observer la qualité." }
+  },
+  "03": {
+    expert: { txt: "Votre lucidité critique est à la hauteur des enjeux : détection, confidentialité, biais, auteurship, hégémonie linguistique. Vous incarnez une éthique professionnelle mature.", action: "Formaliser et partager votre charte d'usage — plus elle sera documentée, plus elle pourra soutenir vos collègues et inspirer votre établissement." },
+    solid:  { txt: "Vous identifiez les enjeux majeurs et avez probablement des pratiques de précaution. Le chantier consiste à passer d'un réflexe éthique à un dispositif explicite partagé avec vos apprenant·e·s.", action: "Co-construire avec vos apprenant·e·s une charte d'usage de l'IA en 5 règles — l'exercice pédagogique vaut autant que le document final." },
+    dev:    { txt: "Certains enjeux sont perçus, d'autres restent opaques. La non-fiabilité des détecteurs d'IA (particulièrement contre les apprenant·e·s non natif·ve·s) est un angle souvent négligé avec des conséquences réelles.", action: "Lire la synthèse de Liang et al. (2023) sur les biais des détecteurs d'IA contre les non-natif·ve·s, et reconsidérer la place de ces outils dans votre évaluation." },
+    emerging: { txt: "Dimension à renforcer rapidement : un usage de l'IA sans cadre éthique explicite expose les apprenant·e·s comme l'enseignant·e à des risques concrets (données, équité, auteurship).", action: "Avant le prochain cours : rédiger trois règles minimales sur ce qui est autorisé, encouragé, interdit avec l'IA, et les partager explicitement avec vos apprenant·e·s." }
+  },
+  "04": {
+    expert: { txt: "Vous articulez remarquablement usages de l'IA et principes d'acquisition des langues. Vos choix sont justifiables au-delà du « ça marche » : ils sont pédagogiquement motivés.", action: "Rendre cette articulation visible pour vos apprenant·e·s : nommer, dans vos consignes, le principe d'acquisition que telle tâche avec IA cherche à soutenir." },
+    solid:  { txt: "Vos usages sont cohérents avec la didactique des langues, même si les ancrages théoriques ne sont pas toujours explicités. C'est la dimension où l'expertise d'enseignant·e pèse le plus lourd.", action: "Pour une séquence à venir, écrire en une phrase le principe d'acquisition visé par chaque usage de l'IA — exercice de lucidité didactique." },
+    dev:    { txt: "Vous expérimentez des usages pédagogiques mais leurs ancrages en acquisition des langues restent implicites. Sans cet ancrage, l'IA risque de devenir un gadget motivant plutôt qu'un levier d'apprentissage.", action: "Choisir UN principe d'acquisition (ex. input compréhensible, rétroaction corrective, output poussé) et concevoir explicitement UNE tâche avec IA qui le cible." },
+    emerging: { txt: "C'est souvent la dimension la plus décisive et la plus sous-investie : c'est ce qui distingue un usage pédagogique d'un usage bureautique de l'IA dans l'enseignement des langues.", action: "Relire une synthèse brève sur les conditions d'acquisition d'une L2 (ZPD, input/output, interaction), puis auditer vos usages actuels de l'IA au regard de ces conditions." }
+  },
+  "05": {
+    expert: { txt: "Vos conceptions pédagogiques intégrant l'IA sont abouties : prompt, différenciation, processus d'écriture, pratique orale, réflexivité sur l'IA comme objet. Vous êtes en posture d'auteur·e pédagogique.", action: "Mutualiser vos prompts et vos gabarits de tâches avec la communauté — leur qualité en fera une ressource précieuse au-delà de votre classe." },
+    solid:  { txt: "Vous maîtrisez quelques formats — probablement écriture et rétroaction — et il s'agit maintenant d'élargir votre répertoire vers l'oral médiatisé, la différenciation fine et la littératie IA comme objet.", action: "Concevoir une tâche d'un type que vous n'avez pas encore pratiqué : pratique orale avec un chatbot OU tâche où l'IA est elle-même l'objet d'analyse." },
+    dev:    { txt: "Vous avez testé quelques usages ponctuels. L'étape suivante est de passer du test isolé à la conception de tâches structurées avec objectifs, critères et étayage.", action: "Reprendre UNE tâche d'IA récente et la retravailler en y ajoutant : un objectif langagier explicite, un critère de réussite observable, un étayage différencié." },
+    emerging: { txt: "Votre répertoire de formats est encore à construire. Commencer petit et bien fait sera plus rentable que multiplier les expérimentations dispersées.", action: "Choisir UN usage précis (ex. rétroaction sur un brouillon d'écriture) et le mettre en place proprement sur deux à trois séances consécutives." }
+  },
+  "06": {
+    expert: { txt: "Votre posture réflexive et votre attention à l'agentivité des apprenant·e·s sont au cœur de votre pratique. Vous évaluez vos usages et adaptez vos dispositifs.", action: "Transformer votre réflexivité en ressource : un court texte ou une conférence interne partageant votre parcours serait d'une grande utilité pour vos pairs." },
+    solid:  { txt: "Vous êtes réflexif·ve, mais la métacognition des apprenant·e·s et l'évaluation explicite des effets de l'IA restent souvent informelles.", action: "Ajouter un bref temps de métacognition (3-5 min) à la fin de chaque séance mobilisant l'IA : « Qu'ai-je appris ? Qu'a fait l'IA à ma place ? »" },
+    dev:    { txt: "Vous vous interrogez mais ces interrogations restent privées. Leur structuration — en écrit bref, en routine de métacognition — les rendra plus fécondes.", action: "Tenir sur deux semaines un journal professionnel bref (3 lignes/jour) sur vos usages d'IA : ce qui a marché, ce qui n'a pas marché, pour qui." },
+    emerging: { txt: "La dimension réflexive est le socle discret d'une pratique qui progresse. Son absence explique pourquoi certain·e·s enseignant·e·s « font de l'IA » sans jamais en tirer de progrès documenté.", action: "Formuler par écrit, en une paragraphe, pourquoi vous utilisez (ou voulez utiliser) l'IA dans votre enseignement — l'explicitation est le premier acte réflexif." }
+  }
+};
+function stratum(pct) {
+  if (pct >= 80) return 'expert';
+  if (pct >= 60) return 'solid';
+  if (pct >= 35) return 'dev';
+  return 'emerging';
+}
+function stratumLabel(s) {
+  return { expert: 'Expert', solid: 'Solide', dev: 'En développement', emerging: 'Émergent' }[s];
+}
+
+// ============================================================
+// RADAR CHART
+// ============================================================
+function renderRadar(dimScores) {
+  const svg = document.getElementById('radar-svg');
+  const R = 170;
+  const N = dimScores.length;
+  svg.innerHTML = '';
+
+  // Concentric guides
+  [0.25, 0.5, 0.75, 1].forEach((f, i) => {
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const pts = [];
+    for (let j = 0; j < N; j++) {
+      const a = (Math.PI * 2 * j / N) - Math.PI / 2;
+      pts.push(`${Math.cos(a) * R * f},${Math.sin(a) * R * f}`);
+    }
+    poly.setAttribute('points', pts.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', i === 3 ? '#8c7851' : '#c7b697');
+    poly.setAttribute('stroke-width', i === 3 ? '1' : '0.5');
+    poly.setAttribute('stroke-dasharray', i === 3 ? 'none' : '2,3');
+    svg.appendChild(poly);
+  });
+
+  // Spokes + labels
+  for (let i = 0; i < N; i++) {
+    const a = (Math.PI * 2 * i / N) - Math.PI / 2;
+    const x = Math.cos(a) * R, y = Math.sin(a) * R;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 0); line.setAttribute('y1', 0);
+    line.setAttribute('x2', x); line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#c7b697'); line.setAttribute('stroke-width', '0.5');
+    svg.appendChild(line);
+
+    // Label
+    const lx = Math.cos(a) * (R + 28), ly = Math.sin(a) * (R + 28);
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', lx); txt.setAttribute('y', ly);
+    txt.setAttribute('text-anchor', Math.abs(Math.cos(a)) < 0.2 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end'));
+    txt.setAttribute('dominant-baseline', 'middle');
+    txt.setAttribute('font-size', '11');
+    txt.setAttribute('font-family', 'Manrope, sans-serif');
+    txt.setAttribute('font-weight', '600');
+    txt.setAttribute('fill', '#171411');
+    txt.setAttribute('letter-spacing', '0.5');
+    txt.textContent = dimScores[i].num;
+    svg.appendChild(txt);
+
+    // Score value
+    const tx = Math.cos(a) * (R + 48), ty = Math.sin(a) * (R + 48);
+    const vtxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    vtxt.setAttribute('x', tx); vtxt.setAttribute('y', ty);
+    vtxt.setAttribute('text-anchor', Math.abs(Math.cos(a)) < 0.2 ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end'));
+    vtxt.setAttribute('dominant-baseline', 'middle');
+    vtxt.setAttribute('font-size', '11');
+    vtxt.setAttribute('font-family', 'Fraunces, serif');
+    vtxt.setAttribute('font-style', 'italic');
+    vtxt.setAttribute('fill', '#b8422a');
+    vtxt.textContent = dimScores[i].pct + '%';
+    svg.appendChild(vtxt);
+  }
+
+  // Data polygon (animated)
+  const dataPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  const ptsStart = [];
+  for (let j = 0; j < N; j++) { ptsStart.push('0,0'); }
+  dataPoly.setAttribute('points', ptsStart.join(' '));
+  dataPoly.setAttribute('fill', '#b8422a');
+  dataPoly.setAttribute('fill-opacity', '0.2');
+  dataPoly.setAttribute('stroke', '#b8422a');
+  dataPoly.setAttribute('stroke-width', '2');
+  dataPoly.style.transition = 'all 1.2s cubic-bezier(.2,.8,.2,1)';
+  svg.appendChild(dataPoly);
+
+  // Data points
+  const pointsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  svg.appendChild(pointsGroup);
+
+  setTimeout(() => {
+    const pts = [];
+    for (let j = 0; j < N; j++) {
+      const a = (Math.PI * 2 * j / N) - Math.PI / 2;
+      const f = dimScores[j].pct / 100;
+      const x = Math.cos(a) * R * f, y = Math.sin(a) * R * f;
+      pts.push(`${x},${y}`);
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+      circle.setAttribute('r', 3.5);
+      circle.setAttribute('fill', '#8c2f1d');
+      circle.setAttribute('opacity', '0');
+      circle.style.transition = `opacity 0.6s ease ${0.8 + j * 0.08}s`;
+      pointsGroup.appendChild(circle);
+      setTimeout(() => circle.setAttribute('opacity', '1'), 50);
+    }
+    dataPoly.setAttribute('points', pts.join(' '));
+  }, 200);
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function renderResults(dimScores, globalPct) {
+  const level = getLevel(globalPct);
+  document.getElementById('r-name').textContent = ctx.name ? `Profil de ${ctx.name}` : 'Votre profil';
+  document.getElementById('r-level').textContent = level.label;
+  document.getElementById('r-summary').textContent = level.summary;
+  document.getElementById('r-score').textContent = globalPct;
+
+  // Context tag
+  const ctxBits = [];
+  if (ctx.lang) ctxBits.push(ctx.lang);
+  if (ctx.role) ctxBits.push({primaire:'primaire', secondaire:'secondaire', superieur:'supérieur', adultes:'adultes', autre:'autre contexte'}[ctx.role]);
+  if (ctx.use) ctxBits.push('usage ' + {none:'non installé', rare:'ponctuel', reg:'régulier', int:'intensif'}[ctx.use]);
+  document.getElementById('r-context-tag').textContent = ctxBits.length ? ctxBits.join(' · ') : 'contexte non précisé';
+
+  // Radar
+  renderRadar(dimScores);
+
+  // Bars
+  const grid = document.getElementById('r-grid');
+  grid.innerHTML = '<div class="sg-head">Ventilation par dimension</div>';
+  dimScores.forEach((d) => {
+    const row = document.createElement('div');
+    row.style.display = 'contents';
+    row.innerHTML = `
+      <div class="sg-num">${d.num}</div>
+      <div class="sg-name">${d.title}</div>
+      <div class="sg-val">${d.pct}%</div>
+      <div class="sg-bar-wrap"><div class="sg-bar" style="width:0%"></div></div>
+    `;
+    grid.appendChild(row);
+  });
+  setTimeout(() => {
+    grid.querySelectorAll('.sg-bar').forEach((bar, i) => {
+      bar.style.width = dimScores[i].pct + '%';
+      const s = stratum(dimScores[i].pct);
+      bar.style.background = s === 'expert' ? 'var(--sage)' :
+                             s === 'solid' ? '#4a6a5f' :
+                             s === 'dev' ? 'var(--gold)' : 'var(--accent)';
+    });
+  }, 100);
+
+  // Forces & priorités
+  const sortedDesc = [...dimScores].sort((a, b) => b.pct - a.pct);
+  const sortedAsc = [...dimScores].sort((a, b) => a.pct - b.pct);
+  const strengths = sortedDesc.slice(0, 2);
+  const priorities = sortedAsc.slice(0, 2);
+  const fpEl = document.getElementById('r-fp');
+  fpEl.innerHTML = '';
+  strengths.forEach(d => {
+    const fb = FEEDBACK[d.num][stratum(d.pct)];
+    fpEl.insertAdjacentHTML('beforeend', `
+      <div class="card">
+        <div class="c-lbl">Force</div>
+        <h4>${d.title}</h4>
+        <p>${fb.txt}</p>
+        <div class="c-score">${d.pct}% · ${stratumLabel(stratum(d.pct))}</div>
+      </div>
+    `);
+  });
+  priorities.forEach(d => {
+    const fb = FEEDBACK[d.num][stratum(d.pct)];
+    fpEl.insertAdjacentHTML('beforeend', `
+      <div class="card priority">
+        <div class="c-lbl">Priorité</div>
+        <h4>${d.title}</h4>
+        <p>${fb.txt}</p>
+        <div class="c-score">${d.pct}% · ${stratumLabel(stratum(d.pct))}</div>
+      </div>
+    `);
+  });
+
+  // Feedback détaillé
+  const fbEl = document.getElementById('r-feedback');
+  fbEl.innerHTML = '';
+  dimScores.forEach(d => {
+    const s = stratum(d.pct);
+    const fb = FEEDBACK[d.num][s];
+    const tagClass = {expert:'strong', solid:'solid', dev:'dev', emerging:'emerging'}[s];
+    fbEl.insertAdjacentHTML('beforeend', `
+      <div class="fb-item">
+        <div><span class="fb-tag ${tagClass}">${stratumLabel(s)}</span></div>
+        <div class="fb-body">
+          <h4>${d.num} · ${d.title} <span class="scorebit">· ${d.pct}%</span></h4>
+          <p>${fb.txt}</p>
+          <div class="fb-action"><strong>Action concrète</strong> — ${fb.action}</div>
+        </div>
+      </div>
+    `);
+  });
+
+  // Next actions — personalized
+  const nextActions = buildNextActions(sortedAsc, dimScores);
+  const nextEl = document.getElementById('r-next');
+  nextEl.innerHTML = '';
+  nextActions.forEach(a => {
+    nextEl.insertAdjacentHTML('beforeend', `
+      <div class="action-step">
+        <div>
+          <h5>${a.title}</h5>
+          <p>${a.text}</p>
+        </div>
+      </div>
+    `);
+  });
+}
+
+function buildNextActions(sortedAsc, dimScores) {
+  const weakest = sortedAsc[0];
+  const second = sortedAsc[1];
+  const actions = [];
+
+  // Action 1: weakest dimension
+  actions.push({
+    title: `Cibler en priorité : ${weakest.short}`,
+    text: FEEDBACK[weakest.num][stratum(weakest.pct)].action
+  });
+
+  // Action 2: second weakest
+  actions.push({
+    title: `Enchaîner avec : ${second.short}`,
+    text: FEEDBACK[second.num][stratum(second.pct)].action
+  });
+
+  // Action 3: contextual based on profile shape + usage
+  const dim4 = dimScores.find(d => d.num === '04');
+  const dim3 = dimScores.find(d => d.num === '03');
+  const dim1 = dimScores.find(d => d.num === '01');
+  let a3;
+  if (ctx.use === 'none' || ctx.use === 'rare') {
+    a3 = { title: "Installer une routine d'expérimentation minimale", text: "Votre usage actuel est peu fréquent. Fixer un seul usage récurrent, testé sur 3 séances consécutives, est plus formateur que multiplier les essais isolés. Documenter brièvement ce qui a fonctionné et ce qui a raté." };
+  } else if (dim3.pct < 45) {
+    a3 = { title: "Formaliser un cadre éthique avant d'élargir", text: "Votre usage est installé, mais votre cadre critique et éthique reste faible. Avant d'élargir, co-construire avec vos apprenant·e·s une charte d'usage de l'IA en 5 règles — l'exercice pédagogique vaut autant que le document final." };
+  } else if (dim4.pct < 50) {
+    a3 = { title: "Relier vos usages à un principe d'acquisition", text: "Vos pratiques avec l'IA existent, mais leurs ancrages en acquisition des langues restent implicites. Choisir UN principe (input compréhensible, rétroaction corrective, output poussé) et y accrocher explicitement UNE tâche avec IA." };
+  } else if (dim1.pct < 50) {
+    a3 = { title: "Consolider les fondements conceptuels", text: "Votre pratique est en marche, mais les fondements conceptuels restent à stabiliser. Consacrer 45 min à une synthèse sérieuse sur le fonctionnement d'un LLM rendra tout le reste plus solide." };
+  } else {
+    a3 = { title: "Investir la réflexivité professionnelle", text: "Pour passer au palier supérieur, structurer votre réflexivité : tenir sur deux semaines un journal professionnel bref (3 lignes/jour) sur vos usages d'IA et leurs effets. La progression passe désormais par la documentation." };
+  }
+  actions.push(a3);
+
+  return actions;
+}
+</script>
+
+</body>
+</html>
